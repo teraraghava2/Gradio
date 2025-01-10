@@ -76,4 +76,37 @@ plt.legend(['True (%)', 'False (%)'])
 plt.tight_layout()
 plt.show()
 
+import pandas as pd
+import matplotlib.pyplot as plt
 
+# Sample DataFrame
+data = {
+    'sample_index': [1, 1, 1, 2, 2, 3, 3, 3],
+    'hypothesis_index': [1, 2, 3, 1, 2, 1, 2, 3],
+    'NLI_evidence': [True, False, True, False, True, True, True, False],
+    'NLI_entailment': [0.85, 0.45, 0.95, 0.30, 0.80, 0.90, 0.88, 0.40],
+    'average_NLI_entailment': [0.75, 0.75, 0.75, 0.55, 0.55, 0.90, 0.90, 0.90]
+}
+
+df = pd.DataFrame(data)
+
+# 1. Calculate the average NLI entailment score for True and False NLI evidence
+avg_entailment_true = df[df['NLI_evidence'] == True]['NLI_entailment'].mean()
+avg_entailment_false = df[df['NLI_evidence'] == False]['NLI_entailment'].mean()
+
+# 2. Prepare data for plotting
+avg_entailment_data = pd.DataFrame({
+    'NLI_evidence': ['True', 'False'],
+    'Average_NLI_Entailment': [avg_entailment_true, avg_entailment_false]
+})
+
+# 3. Plotting the average NLI entailment scores
+plt.figure(figsize=(6, 5))
+plt.bar(avg_entailment_data['NLI_evidence'], avg_entailment_data['Average_NLI_Entailment'],
+        color=['green', 'red'])
+plt.title('Average NLI Entailment Score by NLI Evidence')
+plt.xlabel('NLI Evidence')
+plt.ylabel('Average NLI Entailment Score')
+plt.ylim(0, 1)  # Scores are between 0 and 1
+plt.tight_layout()
+plt.show()
