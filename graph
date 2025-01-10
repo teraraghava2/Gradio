@@ -1,0 +1,79 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Sample DataFrame
+data = {
+    'sample_index': [1, 1, 1, 2, 2, 3, 3, 3],
+    'hypothesis_index': [1, 2, 3, 1, 2, 1, 2, 3],
+    'NLI_evidence': [True, False, True, False, True, True, True, False],
+    'NLI_entailment': [0.85, 0.45, 0.95, 0.30, 0.80, 0.90, 0.88, 0.40],
+    'average_NLI_entailment': [0.75, 0.75, 0.75, 0.55, 0.55, 0.90, 0.90, 0.90]
+}
+
+df = pd.DataFrame(data)
+
+# 1. Count of True and False NLI_evidence per sample_index
+evidence_counts = df.groupby(['sample_index', 'NLI_evidence']).size().unstack(fill_value=0)
+
+# Plotting the counts of True and False NLI_evidence per sample
+evidence_counts.plot(kind='bar', stacked=True, color=['red', 'green'])
+plt.title('Count of True and False NLI Evidence per Sample')
+plt.xlabel('Sample Index')
+plt.ylabel('Count')
+plt.legend(['False', 'True'])
+plt.tight_layout()
+plt.show()
+
+# 2. Extracting True NLI_evidence and their entailment scores
+true_entailments = df[df['NLI_evidence'] == True][['sample_index', 'hypothesis_index', 'NLI_entailment']]
+
+print("DataFrame with True NLI Evidence and their Entailment Scores:")
+print(true_entailments)
+
+# 3. Plotting entailment scores for True NLI evidence
+plt.figure(figsize=(8, 5))
+sns.boxplot(x='sample_index', y='NLI_entailment', data=true_entailments, palette='viridis')
+plt.title('Distribution of NLI Entailment Scores for True Evidence')
+plt.xlabel('Sample Index')
+plt.ylabel('NLI Entailment Score')
+plt.tight_layout()
+plt.show()
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Sample DataFrame
+data = {
+    'sample_index': [1, 1, 1, 2, 2, 3, 3, 3],
+    'hypothesis_index': [1, 2, 3, 1, 2, 1, 2, 3],
+    'NLI_evidence': [True, False, True, False, True, True, True, False],
+    'NLI_entailment': [0.85, 0.45, 0.95, 0.30, 0.80, 0.90, 0.88, 0.40],
+    'average_NLI_entailment': [0.75, 0.75, 0.75, 0.55, 0.55, 0.90, 0.90, 0.90]
+}
+
+df = pd.DataFrame(data)
+
+# 1. Calculate the percentage of True and False for each sample_index
+percentage_counts = df.groupby(['sample_index', 'NLI_evidence']).size().unstack(fill_value=0)
+percentage_counts['Total'] = percentage_counts[True] + percentage_counts[False]
+percentage_counts['True_%'] = (percentage_counts[True] / percentage_counts['Total']) * 100
+percentage_counts['False_%'] = (percentage_counts[False] / percentage_counts['Total']) * 100
+
+# 2. Prepare data for plotting
+percentage_plot_data = percentage_counts[['True_%', 'False_%']]
+
+# 3. Plotting the percentage of True and False for each sample_index
+percentage_plot_data.plot(kind='bar', stacked=True, color=['green', 'red'])
+plt.title('Percentage of True and False NLI Evidence per Sample')
+plt.xlabel('Sample Index')
+plt.ylabel('Percentage (%)')
+plt.xticks(rotation=0)
+plt.legend(['True (%)', 'False (%)'])
+plt.tight_layout()
+plt.show()
+
+
